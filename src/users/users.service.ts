@@ -43,5 +43,5 @@ export class UsersService {
     }
 
     return this.usersRepository.remove(user);
-}
+  }
 }
