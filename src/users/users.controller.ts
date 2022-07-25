@@ -30,7 +30,7 @@ export class UsersController {
   @Post('signup')
   async createUser(
     @Body() createUserDto: CreateUserDto,
-    @Session() session: any,
+    @Session() session: Record<string, any>,
   ): Promise<User> {
     const user = await this.authService.signup(createUserDto);
     session.userId = user.id;
