@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Session,
 } from '@nestjs/common';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { AuthUserDto } from './dto/auth-user.dto';
@@ -27,13 +28,23 @@ export class UsersController {
   ) {}
 
   @Post('signup')
-  createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.authService.signup(createUserDto);
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+    @Session() session: any,
+  ): Promise<User> {
+    const user = await this.authService.signup(createUserDto);
+    session.userId = user.id;
+    return user;
   }
 
   @Post('signin')
-  signin(@Body() authUserDto: AuthUserDto): Promise<User> {
-    return this.authService.signin(authUserDto);
+  async signin(
+    @Body() authUserDto: AuthUserDto,
+    @Session() session: Record<string, any>,
+  ): Promise<User> {
+    const user = await this.authService.signin(authUserDto);
+    session.userId = user.id;
+    return user;
   }
 
   @Get(':id')
