@@ -32,7 +32,7 @@ export class UsersController {
 
   @Get(':id')
   async findUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
-    const user = this.usersService.findOne(id);
+    const user = this.usersService.findOneById(id);
 
     if (!user) {
       throw new NotFoundException('User not found!');

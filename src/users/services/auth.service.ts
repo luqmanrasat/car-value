@@ -15,8 +15,8 @@ export class AuthService {
   async signup(authUserDto: AuthUserDto) {
     //- See if email is in use
     const { email, password } = authUserDto;
-    const users = await this.usersService.findByEmail(email);
-    if (users.length) {
+    let user = await this.usersService.findOneByEmail(email);
+    if (user) {
       throw new BadRequestException('Email in use');
     }
 
@@ -35,7 +35,7 @@ export class AuthService {
       email,
       password: result,
     });
-    const user = await this.usersService.create(createUserDto);
+    user = await this.usersService.create(createUserDto);
 
     //- return the user
     return user;
