@@ -14,7 +14,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import { User } from './entities/user.entity';
-import { UsersService } from './users.service';
+import { UsersService } from './services/users.service';
 
 @Controller('auth')
 @Serialize(UserDto)
