@@ -6,27 +6,28 @@ import { AuthService } from './auth.service';
 import { UsersService } from './users.service';
 
 describe('AuthService', () => {
-  const mockUsersService = {
-    findOneByEmail: jest.fn((email: string) => {
-      const [user] = users.filter((user) => user.email === email);
-      return Promise.resolve(user);
-    }),
-    create: jest.fn((createUserDto: CreateUserDto) => {
-      const user = { ...createUserDto } as User;
-      users.push(user);
-      return Promise.resolve(user);
-    }),
-  };
-
   const mockUser = {
     email: 'test@test.com',
     password: 'test123',
   };
-
+  
   let service: AuthService;
+  let mockUsersService: Partial<UsersService>;
   let users: User[];
 
   beforeEach(async () => {
+    mockUsersService = {
+      findOneByEmail: jest.fn((email: string) => {
+        const [user] = users.filter((user) => user.email === email);
+        return Promise.resolve(user);
+      }),
+      create: jest.fn((createUserDto: CreateUserDto) => {
+        const user = { ...createUserDto } as User;
+        users.push(user);
+        return Promise.resolve(user);
+      }),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
@@ -46,6 +47,13 @@ describe('AuthService', () => {
   });
 
   describe('signup', () => {
+    it('should throw a bad request exception if user signs up with an email that is in use', async () => {
+      await service.signup(mockUser);
+      await expect(service.signup(mockUser)).rejects.toThrowError(
+        BadRequestException,
+      );
+    });
+    
     it('should create a new user with a salted & hashed password', async () => {
       const user = await service.signup(mockUser);
       expect(user).toBeDefined();
@@ -53,13 +61,6 @@ describe('AuthService', () => {
       const [salt, hash] = user.password.split('.');
       expect(salt).toBeDefined();
       expect(hash).toBeDefined();
-    });
-
-    it('should throw a bad request exception if user signs up with an email that is in use', async () => {
-      await service.signup(mockUser);
-      await expect(service.signup(mockUser)).rejects.toThrowError(
-        BadRequestException,
-      );
     });
   });
 
