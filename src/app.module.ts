@@ -9,12 +9,14 @@ import { Report } from './reports/entities/report.entity';
 import { APP_PIPE } from '@nestjs/core';
 import * as session from 'express-session';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { configValidationSchema } from './config.schema';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
+      validationSchema: configValidationSchema,
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
