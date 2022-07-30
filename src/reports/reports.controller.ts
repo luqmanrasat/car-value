@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { CreateReportDto } from './dto/create-report.dto';
@@ -17,6 +19,7 @@ import { User } from '../users/entities/user.entity';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { ReportDto } from './dto/report.dto';
 import { AdminGuard } from '../guards/admin.guard';
+import { GetEstimateDto } from './dto/get-estimate.dto';
 
 @Controller('reports')
 export class ReportsController {
@@ -29,24 +32,32 @@ export class ReportsController {
     return this.reportsService.create(createReportDto, user);
   }
 
-  @Get()
-  findAll() {
-    return this.reportsService.findAll();
-  }
+  // @Get()
+  // findAll() {
+  //   return this.reportsService.findAll();
+  // }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reportsService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.reportsService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(AdminGuard)
-  update(@Param('id') id: string, @Body() updateReportDto: UpdateReportDto) {
-    return this.reportsService.update(+id, updateReportDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateReportDto: UpdateReportDto,
+  ) {
+    return this.reportsService.update(id, updateReportDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.reportsService.remove(+id);
+  }
+
+  @Get()
+  getEstimate(@Query() getEstimateDto: GetEstimateDto) {
+    return this.reportsService.createEstimate(getEstimateDto);
   }
 }

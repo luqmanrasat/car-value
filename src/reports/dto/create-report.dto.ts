@@ -1,5 +1,5 @@
+import { Transform } from 'class-transformer';
 import {
-  IsBoolean,
   IsLatitude,
   IsLongitude,
   IsNumber,
@@ -9,6 +9,7 @@ import {
 } from 'class-validator';
 
 export class CreateReportDto {
+  @Transform(({ value }) => parseInt(value))
   @IsNumber()
   @Min(0)
   @Max(1000000)
@@ -20,17 +21,21 @@ export class CreateReportDto {
   @IsString()
   model: string;
 
+  @Transform(({ value }) => parseInt(value))
   @IsNumber()
   @Min(1930)
   @Max(2050)
   year: number;
 
+  @Transform(({ value }) => parseFloat(value))
   @IsLongitude()
   lng: number;
 
+  @Transform(({ value }) => parseFloat(value))
   @IsLatitude()
   lat: number;
 
+  @Transform(({ value }) => parseInt(value))
   @IsNumber()
   @Min(0)
   @Max(1000000)
