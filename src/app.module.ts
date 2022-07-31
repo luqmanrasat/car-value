@@ -4,8 +4,6 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/entities/user.entity';
-import { Report } from './reports/entities/report.entity';
 import { APP_PIPE } from '@nestjs/core';
 import * as session from 'express-session';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -22,9 +20,13 @@ import { configValidationSchema } from './config.schema';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         return {
-          type: 'sqlite',
-          database: configService.get<string>('DB_NAME'),
-          entities: [User, Report],
+          type: 'postgres',
+          host: configService.get('DB_HOST'),
+          port: configService.get('DB_PORT'),
+          username: configService.get('DB_USERNAME'),
+          password: configService.get('DB_PASSWORD'),
+          database: configService.get('DB_NAME'),
+          autoLoadEntities: true,
           synchronize: true,
         };
       },
