@@ -44,11 +44,13 @@ import { configValidationSchema } from './config.schema';
   ],
 })
 export class AppModule {
+  constructor(private readonly configService: ConfigService) {}
+
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(
         session({
-          secret: 'my-secret',
+          secret: this.configService.get('COOKIE_KEY'),
           resave: false,
           saveUninitialized: false,
         }),
