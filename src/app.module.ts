@@ -13,7 +13,6 @@ import { configValidationSchema } from './config.schema';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `.env.${process.env.NODE_ENV}`,
       validationSchema: configValidationSchema,
     }),
     TypeOrmModule.forRootAsync({
@@ -26,8 +25,8 @@ import { configValidationSchema } from './config.schema';
           username: configService.get('DB_USERNAME'),
           password: configService.get('DB_PASSWORD'),
           database: configService.get('DB_NAME'),
+          synchronize: configService.get('DB_SYNC'),
           autoLoadEntities: true,
-          synchronize: true,
         };
       },
     }),
